@@ -3,7 +3,7 @@
     RootModule = 'Regex-Finder.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.0.1'
+    ModuleVersion = '1.0.2'
 
     # ID used to uniquely identify this module
     GUID = 'd290f1ee-6c54-4b01-90e6-d701748f0851'

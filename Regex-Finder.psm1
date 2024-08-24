@@ -13,6 +13,8 @@ function Find-Regex {
 
         [switch]$FileName,
 
+        [switch]$Prompt,
+
         [switch]$AutoContinue,
 
         [Parameter()]
@@ -53,49 +55,46 @@ function Find-Regex {
 
                 # Match file, folder, or file name based on the provided switches
                 $isMatch = $false
-                $matchedText = $null
                 if ($File -and $item.Attributes -match 'Archive') {
                     if ($item.FullName -match $RegexPattern) {
+                        Write-Host "File match: $($item.FullName)" -ForegroundColor Yellow
                         $isMatch = $true
-                        $matchedText = $Matches[0]
                     }
                 } elseif ($Folder -and $item.Attributes -match 'Directory') {
                     if ($item.FullName -match $RegexPattern) {
+                        Write-Host "Folder match: $($item.FullName)" -ForegroundColor Yellow
                         $isMatch = $true
-                        $matchedText = $Matches[0]
                     }
                 } elseif ($FileName -and $item.Name -match $RegexPattern) {
+                    Write-Host "File name match: $($item.FullName)" -ForegroundColor Yellow
                     $isMatch = $true
-                    $matchedText = $Matches[0]
                 } elseif (-not $File -and -not $Folder -and -not $FileName) {
                     if ($item.FullName -match $RegexPattern) {
+                        Write-Host "Match: $($item.FullName)" -ForegroundColor Yellow
                         $isMatch = $true
-                        $matchedText = $Matches[0]
                     }
                 }
 
-                # Log and print matches
+                # Log matches
                 if ($isMatch) {
                     $global:matchCount++
                     if ($LogFile) {
                         Add-Content -Path $LogFile -Value "Match found: $($item.FullName)"
                     }
 
-                    $highlightedPath = $item.FullName -replace [regex]::Escape($matchedText), "`e[36m$matchedText`e[0m"
+                    # Default: Stop on first match
+                    if (-not $Prompt -and -not $AutoContinue) {
+                        return
+                    }
 
-                    Write-Host "File match: " -ForegroundColor Green -NoNewline
-                    Write-Host "$highlightedPath" -NoNewline
-
-                    # Prompt the user if a match is found
-                    if (-not $AutoContinue) {
-                        $response = Read-Host " Match found. Do you want to continue searching? (Y/N) Exclude this pattern from further search? (E)"
+                    # Prompt the user if a match is found and -Prompt is used
+                    if ($Prompt) {
+                        $response = Read-Host "Match found. Do you want to continue searching? (Y/N) Exclude this pattern from further search? (E)"
                         if ($response -eq 'N') {
                             return
                         } elseif ($response -eq 'E') {
                             $ExcludePattern = [regex]::Escape($item.FullName)
                         }
-                    } else {
-                        Write-Host ""
                     }
                 }
 
@@ -116,14 +115,13 @@ function Find-Regex {
 
         # Recurse into subdirectories if user chooses to continue
         foreach ($subdir in $items | Where-Object { $_.PSIsContainer }) {
-            Find-Regex -RegexPattern $RegexPattern -DirectoryPath $subdir.FullName -File:$File -Folder:$Folder -FileName:$FileName -AutoContinue:$AutoContinue -LogFile $LogFile -ErrorLogFile $ErrorLogFile -ExcludePattern $ExcludePattern -MaxDepth ($MaxDepth - 1) -TimeLimit $TimeLimit
+            Find-Regex -RegexPattern $RegexPattern -DirectoryPath $subdir.FullName -File:$File -Folder:$Folder -FileName:$FileName -Prompt:$Prompt -AutoContinue:$AutoContinue -LogFile $LogFile -ErrorLogFile $ErrorLogFile -ExcludePattern $ExcludePattern -MaxDepth ($MaxDepth - 1) -TimeLimit $TimeLimit
         }
     }
 
     end {
         if ($global:matchCount -gt 0 -or $global:errorCount -gt 0) {
-            Write-Host "Search complete. " -ForegroundColor Cyan -NoNewline
-            Write-Host "Matches found: $global:matchCount, Errors encountered: $global:errorCount" -ForegroundColor Yellow
+            Write-Host "Search complete. Matches found: $global:matchCount, Errors encountered: $global:errorCount" -ForegroundColor Green
         }
     }
 }
