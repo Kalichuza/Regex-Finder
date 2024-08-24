@@ -15,7 +15,7 @@
     CompanyName = 'kalichuza'
 
     # Description of the functionality provided by this module
-    Description = 'This module recursively searches for files or folders by name using a regex pattern.'
+    Description = 'This module recursively searches for files or folders by name using a regex pattern, with advanced search options and logging features.'
 
     # PowerShell version the module is compatible with
     PowerShellVersion = '5.1'

@@ -1,13 +1,12 @@
 Find-Regex
 SYNOPSIS
-    Recursively searches for files or folders by name using a regex pattern.
+    Recursively searches for files or folders by name using a regex pattern, with advanced search options and logging features.
 
 SYNTAX
-    Find-Regex [-RegexPattern] <string> [-DirectoryPath] <string> [-File] [-Folder] [-FileName] [<CommonParameters>]
+    Find-Regex [-RegexPattern] <string> [-DirectoryPath] <string> [-File] [-Folder] [-FileName] [-AutoContinue] [-VerboseSearch] [-LogFile <string>] [-ErrorLogFile <string>] [-ExcludePattern <string>] [-MaxDepth <int>] [-TimeLimit <TimeSpan>] [<CommonParameters>]
 
 DESCRIPTION
-    This function searches recursively through a specified directory for files or folders that match a given regex pattern.
-    It can filter results based on file type, folder, or file name.
+    This function searches recursively through a specified directory for files or folders that match a given regex pattern. It includes options for logging, excluding patterns, limiting search depth, and more.
 
 PARAMETERS
     -RegexPattern <string>
@@ -50,6 +49,62 @@ PARAMETERS
         Parameter set name           (All)
         Aliases                      None
 
+    -AutoContinue
+        Automatically continues searching without prompting when a match is found.
+        Required?                    false
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
+    -VerboseSearch
+        Outputs additional information about the search process.
+        Required?                    false
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
+    -LogFile <string>
+        Logs matches to the specified file.
+        Required?                    false
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
+    -ErrorLogFile <string>
+        Logs errors to the specified file.
+        Required?                    false
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
+    -ExcludePattern <string>
+        Excludes files or folders matching this pattern from the search.
+        Required?                    false
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
+    -MaxDepth <int>
+        Limits the search to the specified depth in the directory structure.
+        Required?                    false
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
+    -TimeLimit <TimeSpan>
+        Limits the search to the specified amount of time.
+        Required?                    false
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
     <CommonParameters>
         This cmdlet supports the common parameters: Verbose, Debug,
         ErrorAction, ErrorVariable, WarningAction, WarningVariable,
@@ -58,15 +113,21 @@ PARAMETERS
 EXAMPLES
     -------------------------- EXAMPLE 1 --------------------------
 
-    Find-Regex -RegexPattern "\bProject\b" -DirectoryPath "C:\Projects" -File
+    Find-Regex -RegexPattern "\bUsers\b" -DirectoryPath "C:\" -Folder -VerboseSearch
 
-    This command searches the "C:\Projects" directory for files that have "Project" in their names.
+    Searches the top-level of the C:\ directory for folders named "Users". If a match is found, it prompts the user to continue or stop.
 
     -------------------------- EXAMPLE 2 --------------------------
 
-    Find-Regex -RegexPattern ".*2024.*" -DirectoryPath "C:\Archives" -Folder
+    Find-Regex -RegexPattern "\bLog\b" -DirectoryPath "C:\" -File -AutoContinue -LogFile "C:\log_matches.txt"
 
-    This command searches the "C:\Archives" directory for folders with "2024" in their names.
+    Automatically searches the C:\ drive for files named "Log" and logs all matches to C:\log_matches.txt.
+
+    -------------------------- EXAMPLE 3 --------------------------
+
+    Find-Regex -RegexPattern ".*2024.*" -DirectoryPath "C:\Archives" -Folder -ExcludePattern "Backup"
+
+    Searches the C:\Archives directory for folders with "2024" in their names, excluding any folders that match "Backup".
 
 RELATED LINKS
     https://github.com/kalichuza/Regex-Finder
