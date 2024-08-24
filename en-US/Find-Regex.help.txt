@@ -1,0 +1,72 @@
+Find-Regex
+SYNOPSIS
+    Recursively searches for files or folders by name using a regex pattern.
+
+SYNTAX
+    Find-Regex [-RegexPattern] <string> [-DirectoryPath] <string> [-File] [-Folder] [-FileName] [<CommonParameters>]
+
+DESCRIPTION
+    This function searches recursively through a specified directory for files or folders that match a given regex pattern.
+    It can filter results based on file type, folder, or file name.
+
+PARAMETERS
+    -RegexPattern <string>
+        The regular expression pattern to search for within the file or folder names.
+        Required?                    true
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
+    -DirectoryPath <string>
+        The path to the directory where the search should begin.
+        Required?                    true
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
+    -File
+        Filters the results to only include files.
+        Required?                    false
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
+    -Folder
+        Filters the results to only include folders.
+        Required?                    false
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
+    -FileName
+        Filters the results to only include file names (not full paths).
+        Required?                    false
+        Position?                    named
+        Accept pipeline input?       false
+        Parameter set name           (All)
+        Aliases                      None
+
+    <CommonParameters>
+        This cmdlet supports the common parameters: Verbose, Debug,
+        ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+        OutBuffer, PipelineVariable, and OutVariable.
+
+EXAMPLES
+    -------------------------- EXAMPLE 1 --------------------------
+
+    Find-Regex -RegexPattern "\bProject\b" -DirectoryPath "C:\Projects" -File
+
+    This command searches the "C:\Projects" directory for files that have "Project" in their names.
+
+    -------------------------- EXAMPLE 2 --------------------------
+
+    Find-Regex -RegexPattern ".*2024.*" -DirectoryPath "C:\Archives" -Folder
+
+    This command searches the "C:\Archives" directory for folders with "2024" in their names.
+
+RELATED LINKS
+    https://github.com/kalichuza/Regex-Finder
